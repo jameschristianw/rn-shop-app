@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import Colors from "../../constants/Colors";
+import Card from "../UI/Card";
 
 const ProductItem = (props) => {
   let TouchableCmp = TouchableOpacity;
@@ -19,9 +20,9 @@ const ProductItem = (props) => {
     TouchableCmp = TouchableNativeFeedback;
 
   return (
-    <View style={styles.product}>
+    <Card style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableCmp onPress={props.onViewDetail} useForeground>
+        <TouchableCmp onPress={props.onSelect} useForeground>
           <View>
             <View style={styles.imageContainer}>
               <Image source={{ uri: props.image }} style={styles.image} />
@@ -30,37 +31,16 @@ const ProductItem = (props) => {
               <Text style={styles.title}>{props.title}</Text>
               <Text style={styles.price}>${props.price.toFixed(2)}</Text>
             </View>
-            <View style={styles.action}>
-              <Button
-                color={Colors.primary}
-                title="View Details"
-                onPress={props.onViewDetail}
-              />
-              <Button
-                color={Colors.primary}
-                title="Add To Cart"
-                onPress={props.onAddToCart}
-              />
-            </View>
+            <View style={styles.action}>{props.children}</View>
           </View>
         </TouchableCmp>
       </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   product: {
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: "white",
     height: 300,
     margin: 12,
   },
@@ -83,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 8,
-    height: "15%",
+    height: "20%",
   },
   title: {
     fontSize: 18,
@@ -96,7 +76,7 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans",
   },
   action: {
-    height: "25%",
+    height: "20%",
     paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
