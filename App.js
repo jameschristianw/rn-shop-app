@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, LogBox } from "react-native";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 
@@ -11,6 +11,10 @@ import cartReducers from "./store/reducers/cart";
 import orderReducers from "./store/reducers/orders";
 
 import ShopNavigator from "./navigation/ShopNavigator";
+
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state.",
+]);
 
 const rootReducers = combineReducers({
   products: productReducers,
