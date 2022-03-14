@@ -1,6 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { View, Button, StyleSheet, FlatList } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Button,
+  StyleSheet,
+  FlatList,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import * as cartActions from "../../store/action/cart";
@@ -8,11 +15,14 @@ import * as cartActions from "../../store/action/cart";
 import Colors from "../../constants/Colors";
 
 import ProductItem from "../../components/shop/ProductItem";
+import { fetchProducts } from "../../store/action/products";
 
 const ProductOverviewScreen = (props) => {
   const { navigation } = props;
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   const selectItemHandler = (id, title) => {
     navigation.navigate("ProductDetailScreen", {
@@ -20,6 +30,49 @@ const ProductOverviewScreen = (props) => {
       productTitle: title,
     });
   };
+
+  const loadProducts = useCallback(async () => {
+    console.log("Load Products");
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(fetchProducts());
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
+  }, [dispatch, setIsLoading, setError]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
+  useEffect(() => {
+    const willFocusSub = navigation.addListener("focus", loadProducts);
+
+    return willFocusSub;
+  }, [loadProducts]);
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>An error occurred</Text>
+        <Button
+          title="Try again"
+          onPress={() => loadProducts()}
+          color={Colors.primary}
+        />
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View>
@@ -58,11 +111,10 @@ const ProductOverviewScreen = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  centered: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
 });
 
