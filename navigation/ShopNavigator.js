@@ -17,10 +17,12 @@ import OrdersScreen from "../screens/shop/OrdersScreen";
 import { Ionicons } from "@expo/vector-icons";
 import UserProductScreen from "../screens/user/UserProductScreen";
 import EditProductScreen from "../screens/user/EditProductScreen";
+import AuthScreen from "../screens/user/AuthScreen";
 
 const ProductStack = createStackNavigator();
 const OrderStack = createStackNavigator();
 const UserStack = createStackNavigator();
+const AuthStack = createStackNavigator();
 
 const ShopDrawer = createDrawerNavigator();
 
@@ -194,10 +196,23 @@ const UserNavigator = () => {
   );
 };
 
+const AuthNavigator = () => {
+  return (
+    <AuthStack.Navigator>
+      <AuthStack.Screen
+        name="login"
+        component={AuthScreen}
+        options={{ title: "Authenticate" }}
+      />
+    </AuthStack.Navigator>
+  );
+};
+
 const ShopNavigator = () => {
   return (
     <NavigationContainer>
-      <ShopDrawer.Navigator
+      <AuthNavigator />
+      {/* <ShopDrawer.Navigator
         screenOptions={{
           drawerActiveTintColor: Colors.primary,
           headerShown: false,
@@ -242,7 +257,7 @@ const ShopNavigator = () => {
             ),
           })}
         />
-      </ShopDrawer.Navigator>
+      </ShopDrawer.Navigator> */}
     </NavigationContainer>
   );
 };
