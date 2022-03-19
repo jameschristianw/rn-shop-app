@@ -22,6 +22,7 @@ const ProductOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
 
   const selectItemHandler = (id, title) => {
@@ -32,19 +33,21 @@ const ProductOverviewScreen = (props) => {
   };
 
   const loadProducts = useCallback(async () => {
-    console.log("Load Products");
     setError(null);
-    setIsLoading(true);
+    // setIsLoading(true);
+    setIsRefreshing(true);
     try {
       await dispatch(fetchProducts());
     } catch (err) {
       setError(err.message);
     }
-    setIsLoading(false);
+    // setIsLoading(false);
+    setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true);
+    loadProducts().then(() => setIsLoading(false));
   }, [loadProducts]);
 
   useEffect(() => {
@@ -79,7 +82,10 @@ const ProductOverviewScreen = (props) => {
       <StatusBar style="auto" />
       <FlatList
         data={products}
+        style={{ height: "100%" }}
         // keyExtractor={(item) => item.id}
+        onRefresh={loadProducts}
+        refreshing={isRefreshing}
         renderItem={(itemData) => (
           <ProductItem
             image={itemData.item.imageUrl}
